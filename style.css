@@ -1,0 +1,18 @@
+.withdraw-transaction {
+    color: red;
+}
+
+.deposit-transaction {
+    color: green;
+}
+
+.amount-input input {
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.amount-input::after {
+    position: relative;
+    content: "$";
+    right: 30px;
+}

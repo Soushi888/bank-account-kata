@@ -22,7 +22,9 @@ class BankAccount {
 		document.querySelector(".bank-account").innerHTML = `
 				<h2>${this.name}'s account</h2>
 				<p>${this.getAccountBalance()}</p>
-				<input type="number" class="amount-input">
+				<div class="amount-input">				
+					<input type="number">
+				</div>
 				<div class="buttons">
 					<button class="deposit-btn">Deposit</button>
 					<button class="withdraw-btn">Withdraw</button>
@@ -30,36 +32,36 @@ class BankAccount {
 				<ul class="transaction-list"></ul>
 			`;
 
-		let amountInput: HTMLInputElement = document.querySelector(".amount-input");
+		let amountInput: HTMLInputElement = document.querySelector(".amount-input input");
 		let depositBtn: HTMLButtonElement = document.querySelector(".deposit-btn");
 		let withdrawBtn: HTMLButtonElement = document.querySelector(".withdraw-btn");
 		let transactionList: HTMLUListElement = document.querySelector(".transaction-list");
 
-		depositBtn.addEventListener("click", () => {
+		const operationHandler = (operation: string) => {
 			let amount = amountInput.value;
-			if (!isNaN(parseFloat(amount))) {
-				sachaAccount.deposit(parseFloat(amount));
-				sachaAccount.render();
-				transactionList.innerHTML += `<li style="color: green">Deposit of ${amount}$</li>`;
-				amountInput.value = "";
-			}
-		});
+			let date = new Date();
+			let formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}
+			${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-		withdrawBtn.addEventListener("click", () => {
-			let amount = amountInput.value;
 			if (!isNaN(parseFloat(amount))) {
-				sachaAccount.withdraw(parseFloat(amount));
-				sachaAccount.render();
-				transactionList.innerHTML += `<li style="color: red">Withdrawal of ${amount}$</li>`;
+				if (operation === "deposit") {
+					this.deposit(parseFloat(amount));
+					transactionList.innerHTML += `<li class="deposit-transaction">[${formattedDate}] Deposit of ${amount}$</li>`;
+				} else {
+					this.withdraw(parseFloat(amount));
+					transactionList.innerHTML += `<li class="withdraw-transaction">[${formattedDate}] Withdrawal of ${amount}$</li>`;
+				}
+				this.render();
+				console.log(this.getAccountBalance());
 				amountInput.value = "";
 			}
-		});
+		}
+
+		depositBtn.addEventListener("click", () => operationHandler("deposit"));
+		withdrawBtn.addEventListener("click", () => operationHandler("withdraw"));
 	}
 
 	render = () => {
 		document.querySelector(".bank-account p").innerHTML = this.getAccountBalance();
 	}
 }
-
-let sachaAccount = new BankAccount("Sacha", 25.6);
-sachaAccount.init();
