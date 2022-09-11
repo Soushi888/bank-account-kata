@@ -1,10 +1,18 @@
 class BankAccount {
 	name: string;
 	balance: number;
+	private history: string[] = [];
+	private historyIsShow = false;
 
 	constructor(name: string, balance: number = 0) {
 		this.name = name;
 		this.balance = balance;
+
+		if (balance > 0) {
+			this.history.push(`Initial deposit of ${balance}$`);
+		}
+
+		this.init();
 	}
 
 	deposit = (amount: number) => this.balance += amount;
@@ -17,6 +25,29 @@ class BankAccount {
 
 		return `The balance of ${this.name}'s account is ${strRoundedBalance}$.`
 	}
+	getHistory = () => this.history;
+
+	private renderHistory = () => {
+		let transactionList: HTMLUListElement = document.querySelector(".transaction-list");
+		transactionList.innerHTML = "";
+
+		this.history.forEach(transaction => {
+			let className;
+			switch (transaction.split(' ')[0]) {
+				case "Initial":
+					className = "initial-transaction";
+					break;
+				case "Deposited":
+					className = "deposit-transaction";
+					break;
+				case "Withdrew":
+					className = "withdraw-transaction";
+					break;
+			}
+
+			transactionList.innerHTML += `<li class="${className}">${transaction}</li>`
+		});
+	}
 
 	init = () => {
 		document.querySelector(".bank-account").innerHTML = `
@@ -28,6 +59,7 @@ class BankAccount {
 				<div class="buttons">
 					<button class="deposit-btn">Deposit</button>
 					<button class="withdraw-btn">Withdraw</button>
+					<button class="history-btn">Toggle History</button>
 				</div>
 				<ul class="transaction-list"></ul>
 			`;
@@ -35,22 +67,38 @@ class BankAccount {
 		let amountInput: HTMLInputElement = document.querySelector(".amount-input input");
 		let depositBtn: HTMLButtonElement = document.querySelector(".deposit-btn");
 		let withdrawBtn: HTMLButtonElement = document.querySelector(".withdraw-btn");
+		let historyBtn: HTMLButtonElement = document.querySelector(".history-btn");
 		let transactionList: HTMLUListElement = document.querySelector(".transaction-list");
 
 		const operationHandler = (operation: string) => {
 			let amount = amountInput.value;
 			let date = new Date();
-			let formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}
-			${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+			let formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+
+			if (operation === "history") {
+				if (!transactionList.innerHTML) {
+					this.historyIsShow = true;
+					this.renderHistory();
+				} else {
+					this.historyIsShow = false;
+					transactionList.innerHTML = "";
+				}
+
+				return;
+			}
 
 			if (!isNaN(parseFloat(amount))) {
-				if (operation === "deposit") {
-					this.deposit(parseFloat(amount));
-					transactionList.innerHTML += `<li class="deposit-transaction">[${formattedDate}] Deposit of ${amount}$</li>`;
-				} else {
-					this.withdraw(parseFloat(amount));
-					transactionList.innerHTML += `<li class="withdraw-transaction">[${formattedDate}] Withdrawal of ${amount}$</li>`;
+				switch (operation) {
+					case "deposit":
+						this.deposit(parseFloat(amount));
+						this.history.push(`Deposited ${amount}$ on ${formattedDate}`);
+						break;
+					case "withdraw":
+						this.withdraw(parseFloat(amount));
+						this.history.push(`Withdrew ${amount}$ on ${formattedDate}`);
+						break;
 				}
+
 				this.render();
 				console.log(this.getAccountBalance());
 				amountInput.value = "";
@@ -59,9 +107,13 @@ class BankAccount {
 
 		depositBtn.addEventListener("click", () => operationHandler("deposit"));
 		withdrawBtn.addEventListener("click", () => operationHandler("withdraw"));
+		historyBtn.addEventListener("click", () => operationHandler("history"));
 	}
 
 	render = () => {
 		document.querySelector(".bank-account p").innerHTML = this.getAccountBalance();
+		if (this.historyIsShow) {
+			this.renderHistory();
+		}
 	}
 }

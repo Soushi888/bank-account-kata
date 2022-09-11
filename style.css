@@ -1,3 +1,7 @@
+.initial-transaction {
+    color: blue;
+}
+
 .withdraw-transaction {
     color: red;
 }
