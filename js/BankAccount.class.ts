@@ -51,23 +51,8 @@ class BankAccount {
 		return `The balance of ${this.name}'s account is ${strRoundedBalance}$.`
 	}
 
-	private validateWithdraw = (amount: number) => {
-		if (amount <= this.balance) return true;
-
-		console.error(`Insufficient funds`);
-		return false;
-	}
-
-	private validateTransfer = (receiver_account_name: string) => {
-		if (BankAccount.accounts.find(account => account.name === receiver_account_name)) return true
-
-		console.error(`Account ${receiver_account_name} does not exist`);
-		return false;
-	}
-
 	private renderHistory = () => {
 		let transactionList: HTMLUListElement = document.querySelector(`.${this.formattedName}-account .transaction-list`);
-		console.log(transactionList);
 		transactionList.innerHTML = "";
 
 		this.history.forEach(transaction => {
@@ -76,10 +61,12 @@ class BankAccount {
 				case "Initial":
 					className = "initial-transaction";
 					break;
-				case "Deposited" || "Received":
+				case "Deposited" :
+				case "Received":
 					className = "deposit-transaction";
 					break;
-				case "Withdrew" || "Transferred":
+				case "Withdrew" :
+				case "Transferred":
 					className = "withdraw-transaction";
 					break;
 			}
@@ -88,7 +75,7 @@ class BankAccount {
 		});
 	}
 
-	init = () => {
+	private init = () => {
 		document.querySelector(".bank-account").innerHTML += `
 			<div class="${this.formattedName}-account">
 				<h2>${this.name}'s account</h2>
@@ -160,10 +147,24 @@ class BankAccount {
 		historyBtn.addEventListener("click", () => operationHandler("history"));
 	}
 
-	render = () => {
+	private render = () => {
 		document.querySelector(`.${this.formattedName}-account p`).innerHTML = this.getAccountBalance();
 		if (this.historyIsShow) {
 			this.renderHistory();
 		}
+	}
+
+	private validateWithdraw = (amount: number) => {
+		if (amount <= this.balance) return true;
+
+		console.error(`Insufficient funds`);
+		return false;
+	}
+
+	private validateTransfer = (receiver_account_name: string) => {
+		if (BankAccount.accounts.find(account => account.name === receiver_account_name)) return true
+
+		console.error(`Account ${receiver_account_name} does not exist`);
+		return false;
 	}
 }
