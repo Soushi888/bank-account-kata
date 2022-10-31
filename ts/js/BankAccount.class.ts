@@ -7,6 +7,8 @@ class BankAccount {
 	static accounts: BankAccount[] = [];
 
 	constructor(name: string, balance: number = 0) {
+		if (!this.validateAccountName(name)) return;
+
 		this.name = name;
 		this.formattedName = name.trim().toLowerCase()
 			.replace(" ", '-')
@@ -108,6 +110,7 @@ class BankAccount {
 			let formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
 			if (operation === "history") {
+				console.log(historyBtn);
 				if (!transactionList.innerHTML) {
 					this.historyIsShow = true;
 					this.renderHistory();
@@ -122,14 +125,17 @@ class BankAccount {
 			if (!isNaN(parseFloat(amount))) {
 				switch (operation) {
 					case "deposit":
+						console.log(depositBtn);
 						this.deposit(parseFloat(amount));
 						this.history.push(`Deposited ${amount}$ on ${formattedDate}`);
 						break;
 					case "withdraw":
+						console.log(withdrawBtn);
 						if (this.withdraw(parseFloat(amount)))
 							this.history.push(`Withdrew ${amount}$ on ${formattedDate}`);
 						break;
 					case "transfer":
+						console.log(transferBtn);
 						let receiverAccountName = prompt("Enter the name of the receiver account");
 						this.transfer(parseFloat(amount), receiverAccountName);
 						break;
@@ -139,7 +145,7 @@ class BankAccount {
 				console.log(this.getAccountBalance());
 				amountInput.value = "";
 			}
-		}
+		};
 
 		depositBtn.addEventListener("click", () => operationHandler("deposit"));
 		withdrawBtn.addEventListener("click", () => operationHandler("withdraw"));
@@ -152,6 +158,16 @@ class BankAccount {
 		if (this.historyIsShow) {
 			this.renderHistory();
 		}
+	}
+
+	private validateAccountName = (accountName: string) => {
+		let errors = [];
+
+		if (!accountName) errors.push("Account name is required");
+		if (BankAccount.accounts.find(account => account.name === accountName)) errors.push("Account name already exists");
+
+		errors.forEach(error => console.error(error));
+		return errors.length === 0;
 	}
 
 	private validateWithdraw = (amount: number) => {
