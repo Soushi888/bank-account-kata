@@ -1,0 +1,10 @@
+[package]
+name = "rust-bank-kata"
+version = "0.1.0"
+edition = "2021"
+description = "Bank Kata in Rust"
+homepage = "Bank Kata in Rust"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
