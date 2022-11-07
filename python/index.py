@@ -8,7 +8,6 @@ def validate_amount(amount, balance=None, is_balance=False):
 class BankAccount:
     def __init__(self, name, balance):
         validate_amount(balance, is_balance=True)
-
         self.name = name
         self.balance = balance
 
