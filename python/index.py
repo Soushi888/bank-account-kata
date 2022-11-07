@@ -1,4 +1,4 @@
-def validate_amount(amount, balance=None, is_balance=False):
+def validate_amount(amount: float, balance=None, is_balance=False):
     if amount < 0:
         raise ValueError(f"{'Balance' if is_balance else 'Amount'} must be positive")
     if balance is not None and amount > balance:
