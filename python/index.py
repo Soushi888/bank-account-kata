@@ -6,22 +6,22 @@ def validate_amount(amount, balance=None, is_balance=False):
 
 
 class BankAccount:
-    def __init__(self, name, balance):
+    def __init__(self, name: str, balance: float):
         validate_amount(balance, is_balance=True)
         self.name = name
         self.balance = balance
 
-    def deposit(self, amount):
+    def deposit(self, amount: float):
         validate_amount(amount)
         self.balance += amount
         return self.balance
 
-    def withdraw(self, amount):
+    def withdraw(self, amount: float):
         validate_amount(amount, self.balance)
         self.balance -= amount
         return self.balance
 
-    def transfer(self, amount, account):
+    def transfer(self, amount: float, account: "BankAccount"):
         validate_amount(amount, self.balance)
         self.withdraw(amount)
         account.deposit(amount)
@@ -29,4 +29,3 @@ class BankAccount:
 
     def __str__(self):
         return f"Account name: {self.name}, Balance: {self.balance}"
-
