@@ -6,6 +6,10 @@ class TestBankAccount(unittest.TestCase):
     def setUp(self):
         self.account = BankAccount("John", 100)
 
+    def test_empty_name(self):
+        with self.assertRaises(ValueError):
+            BankAccount("", 100)
+
     def test_deposit(self):
         self.assertEqual(self.account.deposit(50), 150)
 

@@ -5,8 +5,14 @@ def validate_amount(amount: float, balance=None, is_balance=False):
         raise ValueError("Amount must be less than balance")
 
 
+def validate_name(name: str):
+    if not name:
+        raise ValueError("Name cannot be empty")
+
+
 class BankAccount:
     def __init__(self, name: str, balance: float):
+        validate_name(name)
         validate_amount(balance, is_balance=True)
         self.name = name
         self.balance = balance
