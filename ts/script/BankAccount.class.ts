@@ -1,4 +1,10 @@
-class BankAccount {
+interface BankAccount {
+	name: string;
+	balance: number;
+	accounts: BankAccount[];
+}
+
+class BankAccount implements BankAccount {
 	name: string;
 	balance: number;
 	private readonly formattedName;
