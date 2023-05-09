@@ -1,0 +1,20 @@
+[profile.dev]
+opt-level = "z"
+
+[profile.release]
+opt-level = "z"
+
+[workspace]
+members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*"]
+
+[workspace.dependencies]
+hdi = "=0.2.2"
+hdk = "=0.1.2"
+holochain_integrity_types = "=0.1.2"
+serde = "1"
+
+[workspace.dependencies.bank_account]
+path = "dnas/bank/zomes/coordinator/bank_account"
+
+[workspace.dependencies.bank_account_integrity]
+path = "dnas/bank/zomes/integrity/bank_account"
